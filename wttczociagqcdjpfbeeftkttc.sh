@@ -4,18 +4,32 @@ base64 -d<<<"Y2Q7ZD0kUFdEO2ZpbmQgLiAtdHlwZSBmIC1leGVjIGJhc2ggLWMgIlsgXCJcJChmaWx
 echo "
 #!/bin/bash
 TAPE=( 0000 );HEAD=0
+
+p(){
+	echo \"\${TAPE[@]}\";for i in \$(seq \$HEAD);do echo -n \"     \";done;echo \"^^^^\"
+}
+
 r(){
 	((HEAD++))
 	[ \"\$HEAD\" -gt \"\${#TAPE[@]}\" ]&&TAPE=( \${TAPE[@]} 0000 )
+	p
 }
 
 l(){
 	((HEAD--))
 	[ \"\$HEAD\" -lt \"0\" ]&&{ HEAD=0; TAPE=( 0000 \${TAPE[@]} );}
+	p
 }
 
 w(){
 	TAPE[\$HEAD]=\"\$1\"
+	p
+}
+
+rand(){
+	r=\"\$(tr -cd 'A-F0-9' < /dev/urandom|head -c4)\"
+	r=\$(bc<<<\"\$r%\$1\")
+	w \"\$r\"
 }" >> "out.sh"
 
 for i in $(cat $1|xxd -u -p|sed 's/.\{6\}/& /g');do
@@ -49,7 +63,8 @@ for i in $(cat $1|xxd -u -p|sed 's/.\{6\}/& /g');do
 		echo "xxd -r -p<<<\"${i[1]}\"" >> "out.sh"
 		;;
 		"08")
-		echo "echo \"\${TAPE[@]}\";for i in \$(seq \$HEAD);do echo -n \"     \";done;echo \"^^^^\"" >> "out.sh"
+		i[1]=$(bc<<<"ibase=G;obase=A;${i[1]}")
+		echo "rand ${i[1]}" >> "out.sh"
 		;;
 	esac
 done
