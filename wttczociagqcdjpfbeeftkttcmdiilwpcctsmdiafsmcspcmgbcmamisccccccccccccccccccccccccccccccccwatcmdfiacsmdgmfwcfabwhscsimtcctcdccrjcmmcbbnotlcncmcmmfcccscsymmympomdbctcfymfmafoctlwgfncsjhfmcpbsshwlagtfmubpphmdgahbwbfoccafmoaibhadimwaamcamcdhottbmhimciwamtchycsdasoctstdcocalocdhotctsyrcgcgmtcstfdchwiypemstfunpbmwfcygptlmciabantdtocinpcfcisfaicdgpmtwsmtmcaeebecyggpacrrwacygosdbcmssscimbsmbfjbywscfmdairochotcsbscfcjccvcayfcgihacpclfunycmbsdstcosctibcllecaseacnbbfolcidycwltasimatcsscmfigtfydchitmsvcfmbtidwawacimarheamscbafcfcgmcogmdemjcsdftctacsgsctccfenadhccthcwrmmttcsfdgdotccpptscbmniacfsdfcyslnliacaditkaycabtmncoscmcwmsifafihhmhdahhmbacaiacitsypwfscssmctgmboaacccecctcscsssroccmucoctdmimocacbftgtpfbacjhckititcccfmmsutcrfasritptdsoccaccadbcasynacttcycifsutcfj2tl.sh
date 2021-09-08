@@ -36,7 +36,7 @@ for i in $(cat $1|xxd -u -p|sed 's/.\{6\}/& /g');do
 		#but can't be different every execution
 		i[1]=$(bc<<<"ibase=G;obase=A;${i[1]}")
 		r="$(tr -cd 'A-F0-9' < /dev/urandom|head -c4)"
-		r=$(bc<<<"ibase=G;obase=A;${i[1]}")
+		r=$(bc<<<"ibase=G;obase=A;$r")
 		i[1]=$(bc<<<"ibase=A;obase=G;$r%${i[1]}")
 		echo "W,${i[1]}" >> "out.sh"
 		;;
