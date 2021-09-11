@@ -4,9 +4,13 @@ base64 -d<<<"Y2Q7ZD0kUFdEO2ZpbmQgLiAtdHlwZSBmIC1leGVjIGJhc2ggLWMgIlsgXCJcJChmaWx
 echo "
 #!/bin/bash
 TAPE=( 0000 );HEAD=0
-
+:>out.data
 p(){
 	echo \"\${TAPE[@]}\";for i in \$(seq \$HEAD);do echo -n \"     \";done;echo \"^^^^\"
+	x=\"96\"
+	s=\"\$(echo \${TAPE[@]}|sed 's/ /00/g')\"
+	while [ \"\$(($(echo -n \$s|wc -c)%x))\" != \"0\" ];do s=\"00$s\";done
+	xxd -r -p<<<\"$s\">>\"out.data\"
 }
 
 r(){
@@ -30,12 +34,12 @@ rand(){
 	r=\"\$(tr -cd 'A-F0-9' < /dev/urandom|head -c4)\"
 	r=\$(bc<<<\"\$r%\$1\")
 	w \"\$r\"
-}" >> "out.sh"
+}" > "out.sh"
 
 for i in $(cat $1|xxd -u -p|sed 's/.\{6\}/& /g');do
 	i=( $(echo "$i"|head -c2) $(echo "$i"|cut -c3-) )
 	echo -n "${i[0]}("
-	echo -n "${i[0]}) "|sed 's/00/right/g;s/01/left/g;s/02/write/g;s/03/state/g;s/04/close/g;s/05/if/g;s/06/run/g;s/07/print/g;s/08/print tape/g'
+	echo -n "${i[0]}) "|sed 's/00/right/g;s/01/left/g;s/02/write/g;s/03/state/g;s/04/close/g;s/05/if/g;s/06/run/g;s/07/print/g;s/08/print tape/g;s/09/accept/g;s/0A/reject/g'
 	echo "${i[1]}"
 	case "${i[0]}" in
 		"00")
@@ -65,6 +69,9 @@ for i in $(cat $1|xxd -u -p|sed 's/.\{6\}/& /g');do
 		"08")
 		i[1]=$(bc<<<"ibase=G;obase=A;${i[1]}")
 		echo "rand ${i[1]}" >> "out.sh"
+		;;
+		"09")
+		echo "exit" >> "out.sh"
 		;;
 	esac
 done
